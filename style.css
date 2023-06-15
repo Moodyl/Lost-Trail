@@ -1,0 +1,184 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    cursor: none;
+}
+
+body {
+    font-family: "gandur-new", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    color: #136F63;
+    font-size: 43px;
+    background-color: #081211;
+    width: 100vw;
+    height: 100vh;
+    transition: all 0.5s ease-out;
+    position: relative;
+}
+
+#cursor {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #136F63;
+    position: absolute;
+    z-index: 9999;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border: 0.5px solid #081211;
+    transition:
+        width 0.2s ease-out,
+        height 0.2s ease-out,
+        background-color 0.2s ease-out;
+
+
+}
+
+#splash-screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+#bg-img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: bottom / cover no-repeat;
+    opacity: 0.5;
+}
+
+#splash-screen::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url(/Img/Splash.png) bottom / cover no-repeat;
+    opacity: 0.5;
+}
+
+#splash-screen h1 {
+    font-size: 350px;
+    line-height: 350px;
+    margin: 0;
+    padding: 50px;
+    font-weight: inherit;
+    font-style: inherit;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#splash-screen div.info {
+    line-height: 50px;
+    padding: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#splash-screen button {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #FB8B24;
+}
+
+#game-container {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+canvas, video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+}
+
+video {
+    transform: scaleX(-1);
+}
+
+#game-container h3 {
+    display: block;
+    position: absolute;
+    margin: 0;
+    padding: 10px 40px 20px 40px;
+    font-weight: inherit;
+    font-style: inherit;
+    left: 0;
+    bottom: 0;
+    background-color: #136F63;
+    color: #081211;
+}
+
+button {
+    margin: 0;
+    border: 0;
+    padding: 10px 20px 20px 20px;
+    color: inherit;
+    background: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    line-height: 43px;
+    transition: all 0.2s ease-out;
+    z-index: 10;
+}
+
+button:hover {
+    color: #FB8B24;
+    border: 1px solid #FB8B24;
+}
+
+#game-container button.path:first-of-type {
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#game-container button.path:nth-of-type(2) {
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+}
+
+#game-container button.path:nth-of-type(3) {
+    top: 50%;
+    right: 50px;
+    transform: translateY(-50%);
+}
+
+#game-container button.path:nth-of-type(4) {
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#person {
+    width: 50%;
+    height: 50%;
+    background: bottom / contain no-repeat;
+}

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lost Trail</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <link rel="stylesheet" href="https://use.typekit.net/mzp3pjk.css">
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="https://unpkg.com/@tensorflow/tfjs-core@3.7.0/dist/tf-core.min.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl@3.7.0/dist/tf-backend-webgl.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection@2.0.0/dist/hand-pose-detection.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.min.js"></script>
+</head>
+
+<body>
+    <div id="splash-screen">
+        <div class="info">
+            <a href="#" id="index">← Index</a><br>
+            by Lauro Gianella<br>
+            CV427.01 Interaction Design<br>
+            SUPSI 2023
+        </div>
+        <h1>Lost Trail</h1>
+        <button id="start-button">Start →</button>
+    </div>
+
+    <div id="game-container">
+        <div id="bg-img"></div>
+        <h3 id="title">— The Beginning —</h3>
+        <div id="choices"></div>
+        <div id="person"></div>
+    </div>
+
+    <video id="video" playsinline></video>
+    <canvas id="canvas"></canvas>
+
+    <script>
+
+        let places = []
+
+        class Place {
+            constructor(name, image, connections, person) {
+                this.name = name;
+                this.image = image;
+                this.connections = connections;
+                this.person = person;
+            }
+        }
+
+        const placeData = [
+            {
+                name: 'Beginning',
+                image: '/Img/Splash.png',
+                connections: ['Lone Road'],
+                person: {}
+            },
+            {
+                name: 'Lone Road',
+                image: '/Img/',
+                connections: ['Wide Opening'],
+                person: { name: 'Wanderer', sprite: '/Img/' }
+            },
+            {
+                name: 'Wide Opening',
+                image: 'Img/Valley.png',
+                connections: ['Rotten Trail', 'Overgrown Ruins', 'Dim Hollow', 'Lone Road'],
+                person: {}
+            },
+            {
+                name: 'Rotten Trail',
+                image: '/Img/',
+                connections: ['Abandoned Camp', 'Stranger', 'Wide Opening'],
+                person: {}
+            },
+            {
+                name: 'Abandoned Camp',
+                image: '/Img/',
+                connections: ['Mysterious Cave-In', 'Noxious Lake', 'Rotten Trail'],
+                person: {}
+            },
+            {
+                name: 'Mysterious Cave-In',
+                image: '/Img/',
+                connections: ['Winding Creek', 'Noxious Lake', 'Abandoned Camp', 'Stranger'],
+                person: {}
+            },
+            {
+                name: 'Noxious Lake',
+                image: 'Img/Swamp.png',
+                connections: ['Mysterious Cave-In', 'Neglected Viaduct', 'Dim Hollow', 'Abandoned Camp'],
+                person: {}
+            },
+            {
+                name: 'Overgrown Ruins',
+                image: '/Img/',
+                connections: ['Noxious Lake', 'Dim Hollow', 'Wide Opening'],
+                person: { name: 'Old Man', sprite: '/Img/' }
+            },
+            {
+                name: 'Dim Hollow',
+                image: '/Img/',
+                connections: ['Overgrown Ruins', 'Grim Canyon', 'Noxious Lake', 'Wide Opening'],
+                person: {}
+            },
+            {
+                name: 'Grim Canyon',
+                image: '/Img/',
+                connections: ['Winding Creek', 'Mysterious Cave-In', 'Rotten Trail'],
+                person: {}
+            },
+            {
+                name: 'Stranger',
+                image: '/Img/',
+                connections: ['Neglected Viaduct', 'Stranger'],
+                person: { name: 'Shady Figure', sprite: '/Img/' }
+            },
+            {
+                name: 'Winding Creek',
+                image: 'Img/Tree.png',
+                connections: ['Dim Hollow', 'Neglected Viaduct'],
+                person: {}
+            },
+            {
+                name: 'Neglected Viaduct',
+                image: 'Img/Bridge.png',
+                connections: ['The Other Side'],
+                person: {}
+            },
+            {
+                name: 'The Other Side',
+                image: '/Img/',
+                connections: [],
+                person: {}
+            },
+        ]
+
+        for (let i = 0; i < placeData.length; i++) {
+            const { name, image, connections, person } = placeData[i];
+
+            let loadImage = placeData[i].image;
+            if (loadImage !== '') {
+                let loadedImage = new Image();
+                loadedImage.src = loadImage;
+                placeData[i].image = loadedImage;
+            }
+
+            let loadSprite = placeData[i].person.sprite;
+            if (loadSprite !== '') {
+                let loadedSprite = new Image();
+                loadedSprite.src = loadSprite;
+                placeData[i].person.sprite = loadedSprite;
+            }
+
+            let place = new Place(name, image, connections, person);
+            places.push(place);
+        }
+
+        let currentLocation = {
+            name: 'Beginning',
+            image: '/Img/Splash.png',
+            connections: ['Lone Road'],
+            person: {}
+        };
+
+        const body = document.querySelector('body');
+        const splashScreen = document.getElementById('splash-screen');
+        const gameContainer = document.getElementById('game-container');
+        const placeBG = document.getElementById('bg-img');
+        const personElement = document.getElementById('person');
+        const startTrigger = document.getElementById('start-button');
+        const indexLink = document.getElementById('index');
+
+        const cursor = document.createElement('div');
+        cursor.id = 'cursor';
+        body.appendChild(cursor);
+
+        // document.addEventListener('contextmenu', function (event) {
+        //     event.preventDefault();
+        // });
+
+        startTrigger.addEventListener('click', function () {
+            splashScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+        });
+        startTrigger.addEventListener('mouseenter', function () { cursorHover('active', this) });
+        startTrigger.addEventListener('mouseleave', function () { cursorHover('inactive', this) });
+
+        indexLink.addEventListener('mouseenter', function () { cursorHover('active', this) });
+        indexLink.addEventListener('mouseleave', function () { cursorHover('inactive', this) });
+
+        function eventHandler(choice) {
+            // Handle the player's choice
+            const chosenPlace = places.find(place => place.name === choice);
+            if (chosenPlace) {
+                currentLocation = chosenPlace;
+                updateEvents(currentLocation.connections);
+                updateBackground(currentLocation.image);
+                updatePerson(currentLocation.person)
+            }
+        }
+
+        // Update the choices on the screen
+        function updateEvents(choiceArray) {
+            //Prendi il titolo del luogo corrente e la lista dei luoghi
+            const choicesContainer = document.getElementById('choices');
+            const title = document.getElementById('title');
+            choicesContainer.innerHTML = '';
+            title.innerHTML = '— ' + currentLocation.name + ' —';
+
+            //Per ogni percorso fai vedere un bottone
+            choiceArray.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.className = 'path';
+
+                button.addEventListener('mouseenter', function () { cursorHover('active', this) });
+                button.addEventListener('mouseleave', function () { cursorHover('inactive', this) });
+                button.addEventListener('click', () => eventHandler(choice));
+
+                choicesContainer.appendChild(button);
+            });
+
+        }
+
+        function updateBackground(background) {
+            placeBG.style.backgroundImage = "url(" + background + ")";
+
+        }
+
+        function updatePerson(person) {
+            if (person) {
+                personElement.style.backgroundImage = "url(" + person.sprite + ")";
+            }
+        }
+
+        function cursorHover(status, target) {
+            if (status == 'active') {
+                cursor.style.width = '100px';
+                cursor.style.height = '100px';
+                cursor.style.backgroundColor = 'transparent';
+                cursor.style.border = '1px solid #FB8B24';
+                timeout = window.setTimeout(function () {
+                    target.click()
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.backgroundColor = '#136F63';
+                    cursor.style.border = 'transparent';
+                }, 3000);
+            }
+
+            if (status == 'inactive') {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.backgroundColor = '#136F63';
+                cursor.style.border = 'transparent';
+                if (timeout) window.clearTimeout(timeout);
+            }
+        }
+
+        updateBackground(currentLocation.image);
+        updateEvents(currentLocation.connections);
+
+    </script>
+    <script type="module" src="/mediapipes.js"></script>
+</body>
+
+</html>
