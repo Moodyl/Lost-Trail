@@ -1,16 +1,16 @@
 const placeData = [
     {
         name: 'Beginning',
-        image: '/Img/Splash.png',
-        connections: ['Lone Road'],
+        image: 'src/Img/Splash.png',
+        connections: ['Lone Road']
     },
     {
         name: 'Lone Road',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Wide Opening'],
         person: {
             name: 'Highwayman',
-            sprite: '/Img/Highwayman.png',
+            sprite: 'src/Img/Highwayman.png',
             textlines: [
                 "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
                 "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
@@ -21,78 +21,99 @@ const placeData = [
     },
     {
         name: 'Wide Opening',
-        image: '/Img/Valley.png',
+        image: 'src/Img/Valley.png',
         connections: ['Rotten Trail', 'Overgrown Ruins', 'Dim Hollow', 'Lone Road'],
     },
     {
         name: 'Rotten Trail',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Abandoned Camp', 'Stranger', 'Wide Opening'],
 
     },
     {
         name: 'Abandoned Camp',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Mysterious Cave-In', 'Noxious Lake', 'Rotten Trail'],
 
     },
     {
         name: 'Mysterious Cave-In',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Winding Creek', 'Noxious Lake', 'Abandoned Camp', 'Stranger'],
 
     },
     {
         name: 'Noxious Lake',
-        image: '/Img/Swamp.png',
+        image: 'src/Img/Swamp.png',
         connections: ['Mysterious Cave-In', 'Neglected Viaduct', 'Dim Hollow', 'Abandoned Camp'],
 
     },
     {
         name: 'Overgrown Ruins',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Noxious Lake', 'Dim Hollow', 'Wide Opening'],
-        person: { name: 'Old Man', sprite: '/Img/Old_Man.png' }
+        person: {
+            name: 'Old Man',
+            sprite: '/src/Img/Old_Man.png',
+            textlines: [
+                "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
+                "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
+                "Survival is a delicate dance in this place, where twisted creatures roam and the very ground seethes with malevolence. Arm yourself, steel your resolve, and embrace the darkness within.",
+                "Yet, amidst the gloom, glimmers of hope flicker. Seek out the resilient souls who defy despair, for in their stories lie fragments of redemption and the faintest glimmer of light."
+            ]
+        }
     },
     {
         name: 'Dim Hollow',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Overgrown Ruins', 'Grim Canyon', 'Noxious Lake', 'Wide Opening'],
 
     },
     {
         name: 'Grim Canyon',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Winding Creek', 'Mysterious Cave-In', 'Rotten Trail'],
 
     },
     {
         name: 'Stranger',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: ['Neglected Viaduct', 'Stranger'],
         person: {
             name: 'Shady Figure',
-            sprite: '/Img/Old_Man.png'
+            sprite: 'src/Img/Old_Man.png',
+            textlines: [
+                "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
+                "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
+                "Survival is a delicate dance in this place, where twisted creatures roam and the very ground seethes with malevolence. Arm yourself, steel your resolve, and embrace the darkness within.",
+                "Yet, amidst the gloom, glimmers of hope flicker. Seek out the resilient souls who defy despair, for in their stories lie fragments of redemption and the faintest glimmer of light."
+            ]
         }
     },
     {
         name: 'Winding Creek',
-        image: 'Img/Tree.png',
+        image: 'src/Img/Tree.png',
         connections: ['Dim Hollow', 'Neglected Viaduct'],
 
     },
     {
         name: 'Neglected Viaduct',
-        image: 'Img/Bridge.png',
+        image: 'src/Img/Bridge.png',
         connections: ['The Other Side'],
         person: {
             name: 'Specter',
-            sprite: '/Img/Specter.png'
+            sprite: 'src/Img/Specter.png',
+            textlines: [
+                "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
+                "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
+                "Survival is a delicate dance in this place, where twisted creatures roam and the very ground seethes with malevolence. Arm yourself, steel your resolve, and embrace the darkness within.",
+                "Yet, amidst the gloom, glimmers of hope flicker. Seek out the resilient souls who defy despair, for in their stories lie fragments of redemption and the faintest glimmer of light."
+            ]
         }
     },
     {
         name: 'The Other Side',
-        image: '/Img/',
+        image: 'src/Img/',
         connections: [],
 
     },

@@ -13,7 +13,7 @@ let mappedPalmY;
 
 let currentLocation = {
 	name: 'Beginning',
-	image: '/Img/Splash.png',
+	image: 'Img/Splash.png',
 	connections: ['Lone Road']
 };
 
