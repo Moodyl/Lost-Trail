@@ -1,7 +1,7 @@
 const placeData = [
     {
         name: 'Beginning',
-        image: 'src/Img/Splash.png',
+        image: 'src/Img/Beginning.png',
         connections: ['Lone Road']
     },
     {
@@ -13,7 +13,7 @@ const placeData = [
             sprite: 'src/Img/Highwayman.png',
             textlines: [
                 "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
-                "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
+                "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its vastness hold treasures untold, but danger lurks in every hidden corner.",
                 "Survival is a delicate dance in this place, where twisted creatures roam and the very ground seethes with malevolence. Arm yourself, steel your resolve, and embrace the darkness within.",
                 "Yet, amidst the gloom, glimmers of hope flicker. Seek out the resilient souls who defy despair, for in their stories lie fragments of redemption and the faintest glimmer of light."
             ]
@@ -26,19 +26,19 @@ const placeData = [
     },
     {
         name: 'Rotten Trail',
-        image: 'src/Img/',
+        image: 'src/Img/Rotten_Trail.png',
         connections: ['Abandoned Camp', 'Stranger', 'Wide Opening'],
 
     },
     {
         name: 'Abandoned Camp',
-        image: 'src/Img/',
+        image: 'src/Img/Abandoned_Camp.png',
         connections: ['Mysterious Cave-In', 'Noxious Lake', 'Rotten Trail'],
 
     },
     {
         name: 'Mysterious Cave-In',
-        image: 'src/Img/',
+        image: 'src/Img/Mysterious_Cave-in.png',
         connections: ['Winding Creek', 'Noxious Lake', 'Abandoned Camp', 'Stranger'],
 
     },
@@ -50,11 +50,11 @@ const placeData = [
     },
     {
         name: 'Overgrown Ruins',
-        image: 'src/Img/',
+        image: 'src/Img/Overgrown_Ruins.png',
         connections: ['Noxious Lake', 'Dim Hollow', 'Wide Opening'],
         person: {
             name: 'Old Man',
-            sprite: '/src/Img/Old_Man.png',
+            sprite: 'src/Img/Old_Man.png',
             textlines: [
                 "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
                 "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
@@ -113,7 +113,7 @@ const placeData = [
     },
     {
         name: 'The Other Side',
-        image: 'src/Img/',
+        image: 'src/Img/The_Other_Side.png',
         connections: [],
 
     },

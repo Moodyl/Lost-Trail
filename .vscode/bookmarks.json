@@ -1,0 +1,124 @@
+{
+	"files": [
+		{
+			"path": "scripts/script.js",
+			"bookmarks": [
+				{
+					"line": 6,
+					"column": 8,
+					"label": "Variabili Globali"
+				},
+				{
+					"line": 20,
+					"column": 2,
+					"label": "Posti import"
+				},
+				{
+					"line": 41,
+					"column": 1,
+					"label": "Costanti"
+				},
+				{
+					"line": 56,
+					"column": 12,
+					"label": ""
+				},
+				{
+					"line": 132,
+					"column": 18,
+					"label": "Call Update"
+				},
+				{
+					"line": 143,
+					"column": 17,
+					"label": "Update"
+				},
+				{
+					"line": 153,
+					"column": 11,
+					"label": "Loop Bottoni"
+				},
+				{
+					"line": 343,
+					"column": 12,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "src/script.js",
+			"bookmarks": [
+				{
+					"line": 6,
+					"column": 9,
+					"label": ""
+				},
+				{
+					"line": 15,
+					"column": 7,
+					"label": ""
+				},
+				{
+					"line": 37,
+					"column": 7,
+					"label": ""
+				},
+				{
+					"line": 52,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 78,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 95,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 108,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 144,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 254,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 263,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 305,
+					"column": 7,
+					"label": ""
+				},
+				{
+					"line": 343,
+					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 376,
+					"column": 9,
+					"label": ""
+				},
+				{
+					"line": 407,
+					"column": 16,
+					"label": ""
+				}
+			]
+		}
+	]
+}
