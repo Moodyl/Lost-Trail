@@ -31,7 +31,7 @@ body {
     transition:
         width 0.2s ease-out,
         height 0.2s ease-out,
-        background-color 1s linear;
+        background-color 0.2s linear;
     text-align: center;
     color: #FB8B24;
     font-size: 100px;
@@ -98,10 +98,6 @@ a {
     display: block;
 }
 
-a:hover {
-    color: #FB8B24;
-}
-
 #game-container {
     display: none;
     width: 100%;
@@ -148,7 +144,8 @@ video {
     color: #081211;
 }
 
-button {
+button,
+a {
     margin: 0;
     border: 0;
     padding: 10px 20px 20px 20px;
@@ -162,8 +159,9 @@ button {
     position: absolute;
     line-height: 43px;
     transition: all 0.2s ease-out;
-    z-index: 10;
+    z-index: 50;
     display: block;
+    outline: 1px solid #136F63;
 }
 
 button.path:first-of-type {
@@ -198,6 +196,7 @@ button.path:nth-of-type(4) {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 50;
     transition:
         width 1s ease-out,
         height 1s ease-out,
@@ -229,4 +228,5 @@ button.path:nth-of-type(4) {
     font-size: 30px;
     letter-spacing: 0.5px;
     display: none;
+    z-index: 100;
 }

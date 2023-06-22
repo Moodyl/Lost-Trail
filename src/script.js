@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	const interactElements = [];
 	let mappedPalmX;
 	let mappedPalmY;
+	let isHandInside = false;
+	let conversationOngoing = false;
 
 
 
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 	const gameContainer = document.getElementById('game-container');
 	const placeBG = document.getElementById('bg-img');
-	const personSprite = document.getElementById('person');
+	const personElement = document.getElementById('person');
 	const characterName = document.getElementById('charactername');
 	const textbox = document.getElementById('textbox');
 
@@ -81,16 +83,42 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	getRects(startButton);
 	getRects(indexLink);
 
-	startButton.addEventListener('handEnter', (event) => {
-		enterClick(true, event.target, function () {
+
+	function startButtonAggr(event) {
+
+		customClick(true, event.target, function () {
 			splashScreen.style.display = 'none';
+			splashScreen.style.zIndex = '-1000';
+			startButton.style.display = 'none';
 			gameContainer.style.display = 'block';
+
+			startButton.removeEventListener('handEnter', startButtonAggr);
 		});
+	}
+
+	startButton.addEventListener('handEnter', startButtonAggr);
+
+	startButton.addEventListener('handLeave', (event) => {
+		customClick(false, event.target);
+	});
+	startButton.addEventListener('mouseenter', startButtonAggr);
+	startButton.addEventListener('mouseleave', (event) => {
+		customClick(false, event.target);
 	});
 
-	// Add event listener for custom handLeave event
-	startButton.addEventListener('handLeave', (event) => {
-		enterClick(false, event.target);
+
+
+	indexLink.addEventListener('handEnter', (event) => {
+		customClick(true, event.target)
+	});
+	indexLink.addEventListener('handLeave', (event) => {
+		customClick(false, event.target);
+	});
+	indexLink.addEventListener('mouseenter', (event) => {
+		customClick(true, event.target)
+	});
+	indexLink.addEventListener('mouseleave', (event) => {
+		customClick(false, event.target);
 	});
 
 	//* Update upon choice
@@ -113,26 +141,39 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		const choicesContainer = document.getElementById('choices');
 		const title = document.getElementById('title');
 		choicesContainer.innerHTML = '';
-		title.innerHTML = '— ' + currentLocation.name + ' —';
+		title.innerText = '— ' + currentLocation.name + ' —';
 
 		//Per ogni percorso fai vedere un bottone
 		choiceArray.forEach(choice => {
 			let choiceButton = document.createElement('button');
-			choiceButton.textContent = choice;
+			choiceButton.innerText = choice;
 			choiceButton.className = 'path';
 
 			choiceButton.addEventListener('handEnter', (event) => {
-				enterClick(true, event.target, choiceHandler(choiceButton.textContent));
+				console.log(event.target)
+				customClick(true, event.target, function () {
+					choiceHandler(choiceButton.innerText);
+				});
 			});
 
 			choiceButton.addEventListener('handLeave', (event) => {
-				enterClick(false, event.target);
+				customClick(false, event.target);
+			});
+
+			choiceButton.addEventListener('mouseenter', (event) => {
+				console.log(event.target)
+				customClick(true, event.target, function () {
+					choiceHandler(choiceButton.innerText);
+				});
+			});
+
+			choiceButton.addEventListener('mouseleave', (event) => {
+				customClick(false, event.target);
 			});
 
 			choicesContainer.appendChild(choiceButton);
 
 			getRects(choiceButton)
-
 		});
 
 
@@ -147,70 +188,103 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	function updatePerson(person) {
 		if (person) {
 
-			personSprite.style.backgroundImage = "url(" + person.sprite + ")";
-			personSprite.style.display = 'block';
-			personSprite.style.border = '1px solid #136F63';
+			personElement.style.backgroundImage = "url(" + person.sprite + ")";
+			personElement.style.display = 'block';
 
-			getRects(personSprite)
+			getRects(personElement)
 
-			personSprite.addEventListener('handEnter', (event) => {
-				enterClick(true, event.target, function () {
+			personElement.addEventListener('handEnter', (event) => {
+				console.log(event.target)
+				customClick(true, event.target, function () {
 					characterName.style.display = 'block';
 					textbox.style.display = 'block';
 
-					personSprite.style.width = '800px';
-					personSprite.style.height = '1200px';
-					personSprite.style.top = '80%';
-					personSprite.style.left = '50%';
+					personElement.style.width = '800px';
+					personElement.style.height = '1200px';
+					personElement.style.top = '80%';
+					personElement.style.left = '50%';
 
 					characterName.innerText = person.name;
 					printText(person.textlines);
 				})
 			})
 
-			personSprite.addEventListener('handLeave', (event) => {
-				enterClick(false, event.target)
+			personElement.addEventListener('handLeave', (event) => {
+				console.log(event.target)
+				customClick(false, event.target)
+			})
+
+			personElement.addEventListener('mouseenter', (event) => {
+				if (!conversationOngoing) {
+					customClick(true, event.target, function () {
+						characterName.style.display = 'block';
+						textbox.style.display = 'block';
+
+						personElement.style.width = '800px';
+						personElement.style.height = '1200px';
+						personElement.style.top = '80%';
+						personElement.style.left = '50%';
+
+						characterName.innerText = person.name;
+						printText(person.textlines);
+						conversationOngoing = true;
+
+					})
+				}
+			})
+
+			personElement.addEventListener('mouseleave', (event) => {
+				console.log(event.target)
+				customClick(false, event.target)
 			})
 
 		} else {
 			characterName.style.display = 'none';
 			textbox.style.display = 'none';
-			personSprite.style.display = 'none';
+			personElement.style.display = 'none';
 		}
 
 		//* Dialogue Box Logic
 
 		function printText(textlines) {
-
 			// Display next NPC message or finish
 			function checkLines() {
 				if (textlines.length > 0) {
-
 					let line = textlines.shift();
 					displayLine(line);
-
 				} else {
-
-					textbox.innerHTML = '';
 					textbox.innerHTML += '<p>End of conversation.</p>';
 					// All messages displayed
-					const resetPersonHandler = (event) => {
+					const resetPersonHandler = () => {
 						textbox.innerHTML = '';
 						characterName.style.display = 'none';
 						textbox.style.display = 'none';
 
-						personSprite.style.width = '500px';
-						personSprite.style.height = '500px';
-						personSprite.style.top = '50%';
-						personSprite.style.left = '50%';
+						personElement.style.width = '500px';
+						personElement.style.height = '500px';
+						personElement.style.top = '50%';
+						personElement.style.left = '50%';
 
-						event.target.removeEventListener('click', resetPersonHandler);
+						conversationOngoing = false;
+
+						textbox.removeEventListener('mouseenter', mouseenterHandler);
+						textbox.removeEventListener('mouseleave', mouseleaveHandler);
 					};
 
-					textbox.addEventListener('click', resetPersonHandler);
+					const mouseenterHandler = (event) => {
+						customClick(true, event.target, resetPersonHandler);
+					  };
+					  
+					  const mouseleaveHandler = (event) => {
+						customClick(true, event.target);
+					  };
 
+					textbox.addEventListener('mouseenter', mouseenterHandler);
+					textbox.addEventListener('mouseleave', mouseleaveHandler);
 				}
 			}
+
+
 
 			// Typewriter effect
 			function typeWriterEffect(line, index, lineContainer, callback) {
@@ -227,28 +301,38 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 			// Display NPC messages
 			function displayLine(line) {
-				textbox.innerHTML = ''; // Empty the textbox
-				let lineContainer = document.createElement('p');
+
+				let lineContainer;
+
+				if (lineContainer){
+					textbox.removeChild(lineContainer);
+				};
+
+				lineContainer = document.createElement('p');
 				textbox.appendChild(lineContainer);
 
 				typeWriterEffect(line, 0, lineContainer, function () {
-					textbox.addEventListener('click', eventHandler);
+					// Add event listeners after the text has finished typing
+					textbox.addEventListener('mouseenter', eventHandler);
+					textbox.addEventListener('mouseleave', eventHandler);
 				});
 			}
 
 			function eventHandler(event) {
-				removeEvent();
-				enterClick(true, event.target);
+				customClick(true, event.target, removeEvent);
 			}
 
 			// Handle player input
 			function removeEvent() {
-				textbox.removeEventListener('click', eventHandler);
+				textbox.removeEventListener('mouseenter', eventHandler);
+				textbox.removeEventListener('mouseleave', eventHandler);
 				checkLines();
 			}
 
-			checkLines()
+
+			checkLines();
 		}
+
 	}
 
 
@@ -321,55 +405,82 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 				interactElements.forEach(interactElement => {
 
-					if (mappedPalmX > interactElement.left &&
-						mappedPalmX < interactElement.right &&
-						mappedPalmY > interactElement.top &&
-						mappedPalmY < interactElement.bottom) {
-						dispatchCustomEvent(interactElement.object, 'handEnter', interactElement)
-					} else {
-						dispatchCustomEvent(interactElement.object, 'handLeave', interactElement)
-					}
-				});
+					if (mappedPalmX > interactElement.rect.left &&
+						mappedPalmX < interactElement.rect.right &&
+						mappedPalmY > interactElement.rect.top &&
+						mappedPalmY < interactElement.rect.bottom) {
 
+						if (!isHandInside) {
+							dispatchCustomEvent(interactElement.object, 'handEnter');
+							isHandInside = true; // Update flag
+						}
+
+					} else {
+
+						if (isHandInside) {
+							dispatchCustomEvent(interactElement.object, 'handLeave');
+							isHandInside = false; // Update flag
+						}
+					}
+
+				});
 			}
 		}
 	}
 
-	function dispatchCustomEvent(element, eventName, eventData) {
-		const event = new CustomEvent(eventName, { detail: eventData });
+	function dispatchCustomEvent(element, eventName) {
+		const event = new CustomEvent(eventName);
 		element.dispatchEvent(event);
-		console.log(event)
+		console.log(eventName, event.target)
 	}
 
 	//* Hand Hover and Click
 
-	function enterClick(status, target, clickFunction) {
+	function customClick(status, target, clickFunction) {
 
-		let duration = 4;
+		let duration = 3;
 		let opacity = 0;
+		const cyans = ['#136F63', '#0B413A', '#072723', '#081211'];
+		const yellows = ['#FB8B24', '#9A4F09', '#371E06', '#120D08'];
 
 
 		if (status) {
 			cursor.style.width = '100px';
 			cursor.style.height = '100px';
 			cursor.style.backgroundColor = 'transparent';
-			cursor.style.border = '1px solid #FB8B24';
+			cursor.style.border = '1px solid ' + yellows[0];
 
-			target.style.color = '#FB8B24';
-			target.style.border = '1px solid #FB8B24'
+			target.style.color = yellows[0];
+			if (target !== person) {
+				target.style.outline = '1px solid ' + yellows[0];
+			}
+
+			if (target == textbox) {
+				target.style.backgroundColor = yellows[2];
+			}
+
 			if (!timer) {
 				timer = setInterval(updateCountdown, 1000);
 			};
 		} else {
 			cursor.style.width = '20px';
 			cursor.style.height = '20px';
-			cursor.style.backgroundColor = '#136F63';
+			cursor.style.backgroundColor = cyans[0];
 			cursor.style.border = 'transparent';
+
+			target.style.color = cyans[0];
+			if (target !== person) {
+				target.style.outline = '1px solid ' + cyans[0];
+			}
+
+			if (target == textbox) {
+				target.style.backgroundColor = cyans[2]
+			}
 
 			if (timer) {
 				clearInterval(timer);
 				timer = undefined; // Reset the timer variable
-				duration = 4;
+				duration = 2;
 				cursor.innerText = '';
 			}
 		};
@@ -380,19 +491,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 			console.log('counting down' + duration)
 
-			if (duration < 1) {
+			if (duration >= 1) {
 
-				duration--;
 				cursor.innerText = duration;
-				opacity += 1 / 3;
 				cursor.style.backgroundColor = 'rgba(251, 139, 36, ' + opacity + ')';
 
+				opacity += 1 / 3;
+				duration--;
 
 			} else {
 
 				cursor.innerText = '';
 
-				duration = 4;
+				duration = 3;
 				opacity = 0;
 
 				clearInterval(timer);
@@ -413,15 +524,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			const elementRect = elementRects[0];
 			const elementObj = {
 				object: element,
-				top: elementRect.top,
-				right: elementRect.right,
-				bottom: elementRect.bottom,
-				left: elementRect.left
+				rect: elementRect
 			};
 			interactElements.push(elementObj);
+			console.log(elementObj)
 		}
 	}
-
 
 	function mapValue(value, inputMin, inputMax, outputMin, outputMax) {
 		let inputRange = inputMax - inputMin;

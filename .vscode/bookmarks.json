@@ -1,121 +1,66 @@
 {
 	"files": [
 		{
-			"path": "scripts/script.js",
-			"bookmarks": [
-				{
-					"line": 6,
-					"column": 8,
-					"label": "Variabili Globali"
-				},
-				{
-					"line": 20,
-					"column": 2,
-					"label": "Posti import"
-				},
-				{
-					"line": 41,
-					"column": 1,
-					"label": "Costanti"
-				},
-				{
-					"line": 56,
-					"column": 12,
-					"label": ""
-				},
-				{
-					"line": 132,
-					"column": 18,
-					"label": "Call Update"
-				},
-				{
-					"line": 143,
-					"column": 17,
-					"label": "Update"
-				},
-				{
-					"line": 153,
-					"column": 11,
-					"label": "Loop Bottoni"
-				},
-				{
-					"line": 343,
-					"column": 12,
-					"label": ""
-				}
-			]
-		},
-		{
 			"path": "src/script.js",
 			"bookmarks": [
 				{
-					"line": 6,
-					"column": 9,
-					"label": ""
-				},
-				{
-					"line": 15,
+					"line": 17,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 37,
+					"line": 39,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 52,
+					"line": 54,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 78,
+					"line": 80,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 95,
+					"line": 123,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 108,
+					"line": 136,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 144,
+					"line": 185,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 254,
+					"line": 246,
+					"column": 14,
+					"label": ""
+				},
+				{
+					"line": 411,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 263,
+					"line": 420,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 305,
+					"line": 462,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 343,
+					"line": 509,
 					"column": 5,
-					"label": ""
-				},
-				{
-					"line": 376,
-					"column": 9,
-					"label": ""
-				},
-				{
-					"line": 407,
-					"column": 16,
 					"label": ""
 				}
 			]
