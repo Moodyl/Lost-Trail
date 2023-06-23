@@ -62,7 +62,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url(Img/Splash.png) bottom / cover no-repeat;
+    background: url(Img/Beginning.png) bottom / cover no-repeat;
     opacity: 0.5;
 }
 
@@ -74,28 +74,23 @@ body {
     font-weight: inherit;
     font-style: inherit;
     position: absolute;
-    bottom: 0;
+    bottom: 20%;
     left: 0;
 }
 
 #splash-screen div.info {
-    line-height: 50px;
+    line-height: 30px;
     padding: 50px;
     position: absolute;
     top: 0;
     left: 0;
+    font-size: 30px;
 }
 
 #splash-screen button {
     position: absolute;
     bottom: 50px;
     right: 50px;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-    display: block;
 }
 
 #game-container {
@@ -105,17 +100,6 @@ a {
     position: relative;
     overflow: hidden;
 }
-
-/* #game-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    opacity: 0.5;
-} */
 
 canvas,
 video {
@@ -188,6 +172,14 @@ button.path:nth-of-type(4) {
     transform: translateX(-50%);
 }
 
+a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    font-size: 43px;
+    position: relative;
+}
+
 #person {
     width: 500px;
     height: 500px;
@@ -212,6 +204,9 @@ button.path:nth-of-type(4) {
     background-color: #136F63;
     color: #072723;
     padding: 5px 20px 10px 20px;
+    transition: 
+        color 0.2s ease-out,
+        background 0.2s ease-out;
 }
 
 #textbox {
@@ -229,4 +224,9 @@ button.path:nth-of-type(4) {
     letter-spacing: 0.5px;
     display: none;
     z-index: 100;
+    text-overflow: ellipsis;
+    transition: 
+        outline 0.2s ease-out,
+        color 0.2s ease-out,
+        background 0.2s ease-out;
 }
