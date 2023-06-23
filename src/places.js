@@ -1,4 +1,4 @@
-const placeData = [
+export const placeData = [
     {
         name: 'Beginning',
         image: 'src/Img/Beginning.png',
@@ -10,16 +10,17 @@ const placeData = [
         connections: ['Wide Opening'],
         person: {
             name: 'Highwayman',
-            visited: false,
+            encountered: false,
             sprite: 'src/Img/Highwayman.png',
             textlines: [
                 "Hey chump, I see you've made it in one piece. It takes some gut to venture further than this, I stand here for some time, it could be days even",
                 "I sometimes hear whispers of sorrows and unspeakable horrors carried by the stale air. I fear that I'll be going mad in a while",
                 "The secrets you seek are concealed through the winding paths, coated by the fog. I'm sure its vastness holds riches but I wouldn't risk it if I were you.",
-                "Survival is a nasty dance in this hole, I saw twisted creatures roaming, hiding in between the shrubbery, I fled that very moment.",
+                "Survival is a nasty dance in this hole, I saw twisted creatures roaming, hiding in between the shrubbery, I fled the very moment I saw them.",
                 "If you're such a fool to face such monstrosities, you should seek the few glimmers of hope that wander the land before us.",
-                "Seek fragments of redemption and the faintest glimmer of light in the stories of resilient souls who defy despair."
-            ]
+                "Seek fragments of redemption and the faintest glimmer of light in the stories of the resilient, who defy despair. Farewell partner."
+            ],
+            prompt: 'The Highwayman eyes you suspiciously. How do you respond?'
         }
     },
     {
@@ -53,13 +54,13 @@ const placeData = [
         connections: ['Noxious Lake', 'Dim Hollow', 'Wide Opening'],
         person: {
             name: 'Old Man',
-            visited: false,
+            encountered: false,
             sprite: 'src/Img/Old_Man.png',
             textlines: [
-                "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
-                "Through winding paths and haunted ruins, the secrets of this grim and dark place lie concealed. Its depths hold treasures untold, but danger lurks in every hidden corner.",
-                "Survival is a delicate dance in this place, where twisted creatures roam and the very ground seethes with malevolence. Arm yourself, steel your resolve, and embrace the darkness within.",
-                "Yet, amidst the gloom, glimmers of hope flicker. Seek out the resilient souls who defy despair, for in their stories lie fragments of redemption and the faintest glimmer of light."
+                "Ah, greetings, young traveler! It is rare to see people around. Are you in search of hidden wisdom within nature by any chance?",
+                "See that humble plant by your feet? Its delicate leaves and purple flowers hold the essence of chamomile, a herb of tranquility.",
+                "It calms the spirit and eases the troubled mind. Its aroma is quite distinct, makes for a fine tea.",
+                "Here, if you wish to search for herbs, I happen to have a spare herbarium. You can take it. Good luck on your findings traveler!"
             ]
         }
     },
@@ -79,7 +80,7 @@ const placeData = [
         connections: ['Neglected Viaduct', 'Grim Canyon'],
         person: {
             name: 'Shady Figure',
-            visited: false,
+            encountered: false,
             sprite: 'src/Img/Old_Man.png',
             textlines: [
                 "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
@@ -100,7 +101,7 @@ const placeData = [
         connections: ['Winding Creek', 'The Other Side'],
         person: {
             name: 'Specter',
-            visited: false,
+            encountered: false,
             sprite: 'src/Img/Specter.png',
             textlines: [
                 "Ah, weary traveler, you've stumbled upon this forsaken realm. The air whispers tales of ancient sorrows and unspeakable horrors. Be cautious, for shadows coil and despair lingers.",
@@ -117,5 +118,3 @@ const placeData = [
 
     },
 ]
-
-export default placeData;

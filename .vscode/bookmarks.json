@@ -4,63 +4,73 @@
 			"path": "src/script.js",
 			"bookmarks": [
 				{
-					"line": 17,
+					"line": 18,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 39,
+					"line": 40,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 54,
+					"line": 55,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 80,
+					"line": 81,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 123,
+					"line": 124,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 136,
+					"line": 137,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 185,
+					"line": 186,
 					"column": 5,
 					"label": ""
 				},
 				{
-					"line": 246,
+					"line": 247,
 					"column": 14,
 					"label": ""
 				},
 				{
-					"line": 411,
-					"column": 5,
-					"label": ""
-				},
-				{
 					"line": 420,
-					"column": 5,
+					"column": 17,
 					"label": ""
 				},
 				{
-					"line": 462,
+					"line": 450,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 509,
+					"line": 482,
+					"column": 7,
+					"label": ""
+				},
+				{
+					"line": 515,
+					"column": 19,
+					"label": ""
+				},
+				{
+					"line": 537,
 					"column": 5,
+					"label": ""
+				},
+				{
+					"line": 546,
+					"column": 11,
 					"label": ""
 				}
 			]

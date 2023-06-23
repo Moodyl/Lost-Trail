@@ -1,4 +1,4 @@
-import placeData from './places.js'
+import { placeData } from './places.js'
 import { initCamera } from "./camera.js";
 
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	let mappedPalmY;
 	let isHandInside = false;
 	let conversationOngoing = false;
+	let chosenPlace;
 
 
 
@@ -125,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 	function choiceHandler(choice) {
 		// Handle the player's choice
-		const chosenPlace = places.find(place => place.name === choice);
+		chosenPlace = places.find(place => place.name === choice);
 		if (chosenPlace) {
 			currentLocation = chosenPlace;
 			updatePaths(currentLocation.connections);
@@ -217,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			personElement.addEventListener('mouseenter', (event) => {
 				if (!conversationOngoing) {
 					customClick(true, event.target, function () {
+						personElement.removeEventListener('mouseleave', mouseLeaveHandler);
 						characterName.style.display = 'block';
 						textbox.style.display = 'block';
 
@@ -228,15 +230,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 						characterName.innerText = person.name;
 						printText(person.textlines);
 						conversationOngoing = true;
-
 					})
 				}
 			})
 
-			personElement.addEventListener('mouseleave', (event) => {
-				console.log(event.target)
-				customClick(false, event.target)
-			})
+			const mouseLeaveHandler = (event) => { customClick(false, event.target) };
+
+			// Add the event listener
+			personElement.addEventListener('mouseleave', mouseLeaveHandler);
 
 		} else {
 			characterName.style.display = 'none';
@@ -266,18 +267,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
 						personElement.style.left = '50%';
 
 						conversationOngoing = false;
+						chosenPlace.person.encountered = true;
 
 						textbox.removeEventListener('mouseenter', mouseenterHandler);
 						textbox.removeEventListener('mouseleave', mouseleaveHandler);
 					};
 
 					const mouseenterHandler = (event) => {
-						customClick(true, event.target, resetPersonHandler);
-					  };
-					  
-					  const mouseleaveHandler = (event) => {
+						customClick(true, event.target, function () {
+							resetPersonHandler()
+						});
+					};
+
+					const mouseleaveHandler = (event) => {
 						customClick(true, event.target);
-					  };
+					};
 
 					textbox.addEventListener('mouseenter', mouseenterHandler);
 					textbox.addEventListener('mouseleave', mouseleaveHandler);
@@ -304,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 				let lineContainer;
 
-				if (lineContainer){
+				if (lineContainer) {
 					textbox.removeChild(lineContainer);
 				};
 
@@ -313,26 +317,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 				typeWriterEffect(line, 0, lineContainer, function () {
 					// Add event listeners after the text has finished typing
-					textbox.addEventListener('mouseenter', eventHandler);
-					textbox.addEventListener('mouseleave', eventHandler);
+					textbox.addEventListener('mouseenter', mouseEnterTextboxHandler);
+					textbox.addEventListener('mouseout', mouseOutTextboxHandler);
 				});
 			}
 
-			function eventHandler(event) {
+			function mouseEnterTextboxHandler(event) {
 				customClick(true, event.target, removeEvent);
 			}
 
+			const mouseOutTextboxHandler = (event) => {
+				if (!event.relatedTarget || event.relatedTarget.tagName !== 'p') {
+				  customClick(false, event.target);
+				}
+			  };
+
 			// Handle player input
 			function removeEvent() {
-				textbox.removeEventListener('mouseenter', eventHandler);
-				textbox.removeEventListener('mouseleave', eventHandler);
+				textbox.removeEventListener('mouseenter', mouseEnterTextboxHandler);
+				textbox.removeEventListener('mouseout', mouseOutTextboxHandler);
 				checkLines();
 			}
-
-
 			checkLines();
 		}
-
 	}
 
 
@@ -344,9 +351,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-	//! -------------------- Camera code --------------------
-	//! -------------------- Camera code --------------------
-	//! -------------------- Camera code --------------------
+	//! -------------------- Camera interaction code --------------------
+	//! -------------------- Camera interaction code --------------------
+	//! -------------------- Camera interaction code --------------------
 
 	// Configurazione dell’elemento video
 	const videoConfig = { width: 640, height: 480, fps: 60 }
@@ -400,6 +407,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				mappedPalmX = mapValue(palmX, 0, video.width, 0, canvas.width);
 				mappedPalmY = mapValue(palmY, 0, video.height, 0, canvas.height);
 
+				function mapValue(value, inputMin, inputMax, outputMin, outputMax) {
+					let inputRange = inputMax - inputMin;
+					let outputRange = outputMax - outputMin;
+					let normalizedValue = (value - inputMin) / inputRange;
+					let mappedValue = (normalizedValue * outputRange) + outputMin;
+					return mappedValue;
+				}
+
 				cursor.style.left = mappedPalmX + 'px';
 				cursor.style.top = mappedPalmY + 'px';
 
@@ -422,7 +437,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 							isHandInside = false; // Update flag
 						}
 					}
-
 				});
 			}
 		}
@@ -451,12 +465,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			cursor.style.border = '1px solid ' + yellows[0];
 
 			target.style.color = yellows[0];
-			if (target !== person) {
-				target.style.outline = '1px solid ' + yellows[0];
-			}
 
 			if (target == textbox) {
-				target.style.backgroundColor = yellows[2];
+				target.style.backgroundColor = yellows[2]
+				target.style.outline = '3px solid ' + yellows[0];
+
+			} else if (target == personElement) {
+				target.style.width = '600px';
+				target.style.height = '600px';
+
+			} else {
+				target.style.outline = '1px solid ' + yellows[0];
 			}
 
 			if (!timer) {
@@ -469,12 +488,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			cursor.style.border = 'transparent';
 
 			target.style.color = cyans[0];
-			if (target !== person) {
-				target.style.outline = '1px solid ' + cyans[0];
-			}
 
 			if (target == textbox) {
 				target.style.backgroundColor = cyans[2]
+				target.style.outline = '3px solid ' + cyans[0];
+
+			} else if (target == personElement) {
+				target.style.width = '500px';
+				target.style.height = '500px';
+
+			} else {
+				target.style.outline = '1px solid ' + cyans[0];
 			}
 
 			if (timer) {
@@ -529,14 +553,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			interactElements.push(elementObj);
 			console.log(elementObj)
 		}
-	}
-
-	function mapValue(value, inputMin, inputMax, outputMin, outputMax) {
-		let inputRange = inputMax - inputMin;
-		let outputRange = outputMax - outputMin;
-		let normalizedValue = (value - inputMin) / inputRange;
-		let mappedValue = (normalizedValue * outputRange) + outputMin;
-		return mappedValue;
 	}
 
 })
