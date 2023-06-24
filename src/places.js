@@ -23,7 +23,7 @@ export const placeData = [
 	}, {
 		name: 'Wide Opening',
 		image: 'Wide_Opening',
-		connections: ['Rotten Trail', 'Overgrown Ruins', 'Dim Hollow', 'Lone Road'],
+		connections: ['Rotten Trail', 'Overgrown Ruins', 'Void Abyss', 'Lone Road'],
 	}, {
 		name: 'Rotten Trail',
 		image: 'Rotten_Trail',
@@ -50,7 +50,7 @@ export const placeData = [
 	}, {
 		name: 'Noxious Lake',
 		image: 'Noxious_Lake',
-		connections: ['Mysterious Cave-In', 'Neglected Viaduct', 'Dim Hollow', 'Abandoned Camp'],
+		connections: ['Mysterious Cave-In', 'Neglected Viaduct', 'Void Abyss', 'Abandoned Camp'],
 		person: {
 			name: 'Lake Fairy',
 			encountered: false,
@@ -65,7 +65,7 @@ export const placeData = [
 	}, {
 		name: 'Overgrown Ruins',
 		image: 'Overgrown_Ruins',
-		connections: ['Noxious Lake', 'Dim Hollow', 'Wide Opening'],
+		connections: ['Noxious Lake', 'Void Abyss', 'Wide Opening'],
 		person: {
 			name: 'Old Man',
 			encountered: false,
@@ -78,8 +78,8 @@ export const placeData = [
 			]
 		}
 	}, {
-		name: 'Dim Hollow',
-		image: 'Dim_Hollow',
+		name: 'Void Abyss',
+		image: 'Void_Abyss',
 		connections: ['Overgrown Ruins', 'Grim Canyon', 'Noxious Lake', 'Wide Opening'],
 	}, {
 		name: 'Grim Canyon',
@@ -103,7 +103,7 @@ export const placeData = [
 	}, {
 		name: 'Winding Creek',
 		image: 'Winding_Creek',
-		connections: ['Dim Hollow', 'Neglected Viaduct'],
+		connections: ['Void Abyss', 'Neglected Viaduct'],
 	}, {
 		name: 'Neglected Viaduct',
 		image: 'Neglected_Viaduct',
