@@ -3,7 +3,8 @@ export const placeData = [
 		name: 'Beginning',
 		image: 'Beginning',
 		connections: ['Lone Road']
-	}, {
+	},
+	{
 		name: 'Lone Road',
 		image: 'Lone_Road',
 		connections: ['Wide Opening'],
@@ -20,15 +21,18 @@ export const placeData = [
 				"Seek fragments of redemption and the faintest glimmer of light in the stories of the resilient, who defy despair. Farewell partner."
 			]
 		}
-	}, {
+	},
+	{
 		name: 'Wide Opening',
 		image: 'Wide_Opening',
-		connections: ['Rotten Trail', 'Overgrown Ruins', 'Dim Hollow', 'Lone Road'],
-	}, {
+		connections: ['Rotten Trail', 'Overgrown Ruins', 'Void Abyss', 'Lone Road'],
+	},
+	{
 		name: 'Rotten Trail',
 		image: 'Rotten_Trail',
 		connections: ['Abandoned Camp', 'Hidden Hideout', 'Wide Opening'],
-	}, {
+	},
+	{
 		name: 'Abandoned Camp',
 		image: 'Abandoned_Camp',
 		connections: ['Mysterious Cave-In', 'Noxious Lake', 'Rotten Trail'],
@@ -43,29 +47,21 @@ export const placeData = [
 				"Line 4"
 			]
 		}
-	}, {
+	},
+	{
 		name: 'Mysterious Cave-In',
 		image: 'Mysterious_Cave-In',
 		connections: ['Winding Creek', 'Noxious Lake', 'Abandoned Camp', 'Hidden Hideout'],
-	}, {
+	},
+	{
 		name: 'Noxious Lake',
 		image: 'Noxious_Lake',
-		connections: ['Mysterious Cave-In', 'Neglected Viaduct', 'Dim Hollow', 'Abandoned Camp'],
-		person: {
-			name: 'Lake Fairy',
-			encountered: false,
-			sprite: 'Lake_Fairy',
-			textlines: [
-				"Line 1",
-				"Line 2",
-				"Line 3",
-				"Line 4"
-			]
-		}
-	}, {
+		connections: ['Mysterious Cave-In', 'Neglected Viaduct', 'Void Abyss', 'Abandoned Camp'],
+	},
+	{
 		name: 'Overgrown Ruins',
 		image: 'Overgrown_Ruins',
-		connections: ['Noxious Lake', 'Dim Hollow', 'Wide Opening'],
+		connections: ['Noxious Lake', 'Void Abyss', 'Wide Opening'],
 		person: {
 			name: 'Old Man',
 			encountered: false,
@@ -77,15 +73,29 @@ export const placeData = [
 				"Line 4"
 			]
 		}
-	}, {
-		name: 'Dim Hollow',
-		image: 'Dim_Hollow',
+	},
+	{
+		name: 'Void Abyss',
+		image: 'Void_Abyss',
 		connections: ['Overgrown Ruins', 'Grim Canyon', 'Noxious Lake', 'Wide Opening'],
-	}, {
+		person: {
+			name: 'Lake Fairy',
+			encountered: false,
+			sprite: 'Lake_Fairy',
+			textlines: [
+				"Line 1",
+				"Line 2",
+				"Line 3",
+				"Line 4"
+			]
+		}
+	},
+	{
 		name: 'Grim Canyon',
 		image: 'Grim_Canyon',
 		connections: ['Neglected Viaduct', 'Mysterious Cave-In', 'Hidden Hideout'],
-	}, {
+	},
+	{
 		name: 'Hidden Hideout',
 		image: 'Hidden_Hideout',
 		connections: ['Neglected Viaduct', 'Grim Canyon'],
@@ -100,11 +110,13 @@ export const placeData = [
 				"Line 4"
 			]
 		}
-	}, {
+	},
+	{
 		name: 'Winding Creek',
 		image: 'Winding_Creek',
-		connections: ['Dim Hollow', 'Neglected Viaduct'],
-	}, {
+		connections: ['Void Abyss', 'Neglected Viaduct'],
+	},
+	{
 		name: 'Neglected Viaduct',
 		image: 'Neglected_Viaduct',
 		connections: ['Winding Creek', 'The Other Side'],
@@ -119,7 +131,8 @@ export const placeData = [
 				"Line 4"
 			]
 		}
-	}, {
+	},
+	{
 		name: 'The Other Side',
 		image: 'The_Other_Side',
 		connections: [],
