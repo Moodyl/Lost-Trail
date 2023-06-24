@@ -168,8 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	//* Person handling ----------------------------------------
 
-	//! Dio carissimo
-	//! Non funziona il passaggio delle textlines voglio morire
+	
 	function updatePerson(person) {
 
 		console.log(person)
@@ -211,6 +210,9 @@ document.addEventListener("DOMContentLoaded", function () {
 		function engageConvoLeave() { customClick(false, personElement) };
 	}
 	//* Dialogue Box Logic ----------------------------------------
+	//! Dio carissimo
+	//! Non funziona il passaggio delle textlines voglio morire
+	//TODO FAR FUNZIONARE STA COSA
 	
 	function printText(textlines) {
 
@@ -343,7 +345,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
-	initCamera(video, videoConfig.width, videoConfig.height, videoConfig.fps).then(video => {
+	initCamera(video, videoConfig.width, videoConfig.height, videoConfig.fps)
+	.then(video => {
 		video.play()
 		video.addEventListener("loadeddata", boot)
 	})
@@ -399,11 +402,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 							interactElement.object.dispatchEvent(mouseenter)
 							isHandInside = true; // Update flag
+							styleEnter()
+							
 
 					} else if (isHandInside) {
 
 							interactElement.object.dispatchEvent(mouseleave)
 							isHandInside = false; // Update flag
+							styleLeave()
 					}
 				});
 			}
@@ -499,7 +505,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		}
 	}
-
 
 	//* Get Collision Elements ----------------------------------------
 	function getRects(element) {
