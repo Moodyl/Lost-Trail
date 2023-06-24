@@ -5,15 +5,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	//* Global Variables ----------------------------------------
-
 	let timer;
 	const interactElements = [];
 	let mappedPalmX;
 	let mappedPalmY;
 	let isHandInside = false;
-	let conversationOngoing = false;
-	let chosenPlace;
-	let lineContainer;
+	let inConversation = false;
 	let textSpeed = 30;
 	const cyans = ['#136F63', '#0B413A', '#072723', '#081211'];
 	const yellows = ['#FB8B24', '#9A4F09', '#371E06', '#120D08'];
@@ -21,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	//* Import places ----------------------------------------
-
 	let places = [];
 
 	class Place {
@@ -43,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	//* Constants ----------------------------------------
-
 	const body = document.querySelector('body');
 	const indexLink = document.getElementById('index');
 	const splashScreen = document.getElementById('splash-screen');
@@ -51,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	const gameContainer = document.getElementById('game-container');
 	const placeBG = document.getElementById('bg-img');
+	const choicesContainer = document.getElementById('choices');
 	const personElement = document.getElementById('person');
 	const characterName = document.getElementById('charactername');
 	const textbox = document.getElementById('textbox');
@@ -58,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	//* Cursor handling ----------------------------------------
-
 	const cursor = document.createElement('div');
 	cursor.id = 'cursor';
 	body.appendChild(cursor);
@@ -66,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	//TODO Delete this once hover logic and click logic is good
-
 	document.addEventListener('mousemove', function (event) {
 
 		let x = event.clientX;
@@ -84,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	//* Start and Index buttons --------------------
-
 	getRects(startButton);
 	getRects(indexLink);
 
@@ -104,47 +97,41 @@ document.addEventListener("DOMContentLoaded", function () {
 			startButton.removeEventListener('mouseleave', startButtonLeave);
 		});
 	}
-	function startButtonLeave(event) {
-		customClick(false, event.target);
-	};
+	function startButtonLeave(event) { customClick(false, event.target) };
 
-	indexLink.addEventListener('mouseenter', (event) => {
-		customClick(true, event.target)
-	});
-	indexLink.addEventListener('mouseleave', (event) => {
-		customClick(false, event.target);
-	});
+	indexLink.addEventListener('mouseenter', (event) => { customClick(true, event.target) });
+	indexLink.addEventListener('mouseleave', (event) => { customClick(false, event.target) });
+
+
 
 	//* Update on choice ----------------------------------------
-
 	function choiceHandler(choice) {
 		// Handle the player's choice
-		chosenPlace = places.find(place => place.name === choice);
-		console.log('previous location ' + currentLocation.name)
-		currentLocation = chosenPlace;
 
+		const chosenPlace = places.find(Place => Place.name === choice);
+
+		
+		const JSONChosenPlace = JSON.stringify(chosenPlace);
+		currentLocation = JSON.parse(JSONChosenPlace);
+		
+		console.log(chosenPlace, JSONChosenPlace, currentLocation)
+		
 		updatePaths(currentLocation.connections);
 		updateBackground(currentLocation.image);
 
 		if (currentLocation.person) {
-			
-			console.log('previous person ' + currentLocation.person.name)
-			updatePerson(currentLocation.person)
-
-			console.log('current person ' + currentLocation.person.name)
-			console.log('current location ' + currentLocation.name)
+			updatePerson(currentLocation.person);
+			console.log(currentLocation.person)
 		} else {
+			personElement.style.display = 'none';
 			characterName.style.display = 'none';
 			textbox.style.display = 'none';
-			personElement.style.display = 'none';
 		}
 	}
 
 	//* Choice updater ----------------------------------------
-
 	function updatePaths(choiceArray) {
 		//Prendi il titolo del luogo corrente e la lista dei luoghi
-		const choicesContainer = document.getElementById('choices');
 		const title = document.getElementById('title');
 		choicesContainer.innerHTML = '';
 		title.innerText = '— ' + currentLocation.name + ' —';
@@ -155,22 +142,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			choiceButton.innerText = choice;
 			choiceButton.className = 'path';
 
-			// choiceButton.addEventListener('handEnter', (event) => {
-			// 	console.log(event.target)
-			// 	customClick(true, event.target, function () {
-			// 		choiceHandler(choiceButton.innerText);
-			// 	});
-			// });
-
-			// choiceButton.addEventListener('handLeave', (event) => {
-			// 	customClick(false, event.target);
-			// });
-
 			choiceButton.addEventListener('mouseenter', (event) => {
-				// console.log(event.target)
 				customClick(true, event.target, function () {
+
+
 					styleLeave()
-					choiceHandler(choiceButton.innerText);
+					choiceHandler(choiceButton.innerText)
 				});
 			});
 
@@ -190,21 +167,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	//* Person handling ----------------------------------------
 
-	function updatePerson(currentPerson) {
-		console.log(currentPerson)
+	//! Dio carissimo
+	//! Non funziona il passaggio delle textlines voglio morire
+	function updatePerson(person) {
 
-		personElement.style.backgroundImage = "url(src/Img/" + currentPerson.sprite + ".png)";
+		console.log(person)
+		personElement.style.backgroundImage = "url(src/Img/" + person.sprite + ".png)";
 		personElement.style.display = 'block';
+		getRects(personElement)
 
-		characterName.innerText = currentPerson.name;
+		characterName.innerText = person.name;
 
 		personElement.addEventListener('mouseenter', engageConvoEnter);
 		personElement.addEventListener('mouseleave', engageConvoLeave);
 
 		function engageConvoEnter(event) {
-			if (!conversationOngoing) {
+			if (!inConversation) {
+
 				customClick(true, event.target, function () {
-					console.log(currentPerson)
+
 					personElement.removeEventListener('mouseenter', engageConvoEnter);
 					personElement.removeEventListener('mouseleave', engageConvoLeave);
 
@@ -216,32 +197,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
 					personElement.style.width = '800px';
 					personElement.style.height = '1200px';
-					personElement.style.top = '80%';
+					personElement.style.top = '70%';
 					personElement.style.left = '50%';
 
-					printText(currentPerson.textlines);
-					conversationOngoing = true;
+					choicesContainer.style.display = 'none';
+
+					printText(person.textlines);
+					inConversation = true;
 				});
 			}
 		};
-
 		function engageConvoLeave(event) { customClick(false, event.target) };
 
-		getRects(personElement)
 
 		//* Dialogue Box Logic ----------------------------------------
 
-		function printText(currentTextlines) {
+		function printText(textlines) {
 
-			console.log(currentTextlines)
+			console.log(textlines)
 
 			function checkLines() {
-				if (currentTextlines.length > 0) {
-					let line = currentTextlines.shift();
+				if (textlines.length > 0) {
+
+					let line = textlines.shift();
 					displayLine(line);
 
 				} else {
-					// All messages displayed
+
+					textbox.innerHTML = '';
 					textbox.innerHTML += '<p>End of conversation.</p>';
 
 					textbox.addEventListener('mouseenter', endConvoEnter);
@@ -249,6 +232,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 					function endConvoEnter(event) {
 						customClick(true, event.target, function () {
+
+							textbox.innerHTML = '';
+
+							textlines = [];
 
 							characterName.style.display = 'none';
 							textbox.style.display = 'none';
@@ -260,44 +247,55 @@ document.addEventListener("DOMContentLoaded", function () {
 							personElement.style.top = '50%';
 							personElement.style.left = '50%';
 
-							conversationOngoing = false;
+							inConversation = false;
 							chosenPlace.person.encountered = true;
+
+							choicesContainer.style.display = 'block';
 
 							textbox.removeEventListener('mouseenter', endConvoEnter);
 							textbox.removeEventListener('mouseleave', endConvoLeave);
 						});
 					}
+
 					function endConvoLeave(event) { customClick(false, event.target) };
 				}
 			}
 
-			function typeWriterEffect(line, index, lineContainer, callback) {
-				let timerType = setInterval(function () {
-					if (index < line.length) {
-						lineContainer.innerHTML += line.charAt(index);
-						index++;
-					} else { clearInterval(timerType), callback() }
-				}, textSpeed); // Adjust the typing speed here (in milliseconds)
-			}
-
 			function displayLine(line) {
 
-				if (lineContainer) { 
-					lineContainer = ''
-					lineContainer.remove()
-				}
-				lineContainer = document.createElement('p');
+				console.log(line)
+
+				textbox.innerHTML = ''; // Empty the textbox
+
+				let lineContainer = document.createElement('p');
+
 				textbox.appendChild(lineContainer);
 
-				typeWriterEffect(line, 0, lineContainer, function () {
+				typeLine(line, 0, lineContainer, function () {
 					textbox.addEventListener('mouseenter', nextEnter);
 					textbox.addEventListener('mouseleave', nextLeave);
 				});
 			}
 
+			function typeLine(line, index, lineContainer, callback) {
+				var intervalId = setInterval(function () {
+					if (index < line.length) {
+						lineContainer.innerHTML += line.charAt(index);
+						index++;
+					} else {
+						clearInterval(intervalId);
+						callback();
+					}
+				}, textSpeed); // Adjust the typing speed here (in milliseconds)
+			}
+
+
 			function nextEnter(event) {
 				customClick(true, event.target, function () {
-					removeEvents()
+
+					textbox.removeEventListener('mouseenter', nextEnter);
+					textbox.removeEventListener('mouseleave', nextLeave);
+
 					textbox.style.backgroundColor = cyans[2]
 					textbox.style.color = cyans[0]
 					textbox.style.outline = '3px solid ' + cyans[0]
@@ -305,30 +303,29 @@ document.addEventListener("DOMContentLoaded", function () {
 					characterName.style.backgroundColor = cyans[0]
 					characterName.style.color = cyans[2]
 
-					styleLeave()
+					styleLeave();
+					checkLines();
 				});
 			}
 
-			function nextLeave(event) {
-				customClick(false, event.target);
-			};
+			function nextLeave(event) { customClick(false, event.target) };
 
-			// Handle player input
-			function removeEvents() {
-				textbox.removeEventListener('mouseenter', nextEnter);
-				textbox.removeEventListener('mouseleave', nextLeave);
-
-				checkLines();
-			}
 			checkLines();
 		}
 	}
 
 
 	//* First update calls ----------------------------------------
-
 	updateBackground(currentLocation.image);
 	updatePaths(currentLocation.connections);
+	if (currentLocation.person) {
+		updatePerson(currentLocation.person)
+	} else {
+		console.log('no person')
+		personElement.style.display = 'none';
+		characterName.style.display = 'none';
+		textbox.style.display = 'none';
+	}
 
 
 	//! -------------------- Camera interaction code --------------------
@@ -430,7 +427,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	//* Hand Hover and click ----------------------------------------
-
 	function customClick(status, target, clickFunction) {
 
 		let duration = 3;
@@ -525,7 +521,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	//* Get Collision Elements ----------------------------------------
-
 	function getRects(element) {
 		const elementRects = element.getClientRects();
 		if (elementRects.length > 0) {
@@ -535,12 +530,10 @@ document.addEventListener("DOMContentLoaded", function () {
 				rect: elementRect
 			};
 			interactElements.push(elementObj);
-			// console.log(elementObj)
 		}
 	}
 
 	//* Mouse styles ----------------------------------------
-
 	function styleEnter() {
 		cursor.style.width = '100px';
 		cursor.style.height = '100px';
