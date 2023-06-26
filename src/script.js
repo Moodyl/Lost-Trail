@@ -9,14 +9,26 @@ document.addEventListener("DOMContentLoaded", function () {
 	const interactElements = [];
 	let mappedPalmX;
 	let mappedPalmY;
-	let isHandInside = false;
 	let inConversation = false;
 	let textSpeed = 25;
 	const cyans = ['#136F63', '#0B413A', '#072723', '#081211'];
 	const yellows = ['#FB8B24', '#9A4F09', '#371E06', '#120D08'];
 
-	const mouseenter = new Event('mouseenter');
-	const mouseleave = new Event('mouseleave');
+	const handEnter = new CustomEvent('handenter', {
+		detail: {
+			message: 'Hand Enter triggered',
+		},
+		bubbles: false,
+		cancelable: true,
+	});
+
+	const handLeave = new CustomEvent('handleave', {
+		detail: {
+			message: 'Hand Leave triggered',
+		},
+		bubbles: false,
+		cancelable: true,
+	});
 
 
 
@@ -84,26 +96,36 @@ document.addEventListener("DOMContentLoaded", function () {
 	getRects(startButton);
 	getRects(indexLink);
 
-	startButton.addEventListener('mouseenter', startButtonEnter);
-	startButton.addEventListener('mouseleave', startButtonLeave)
+	startButton.addEventListener('handenter', startButtonEnter);
+	startButton.addEventListener('handleave', startButtonLeave)
 
-	function startButtonEnter() {
+	function startButtonEnter(event) {
+		event.stopPropagation();
 		customClick(true, startButton, function () {
+			startButton.removeEventListener('handleave', startButtonLeave);
+			startButton.removeEventListener('handenter', startButtonEnter);
+
 			splashScreen.style.display = 'none';
 			splashScreen.style.zIndex = '-1000';
 			startButton.style.display = 'none';
 			gameContainer.style.display = 'block';
 
 			styleLeave()
-
-			startButton.removeEventListener('mouseenter', startButtonEnter);
-			startButton.removeEventListener('mouseleave', startButtonLeave);
 		});
 	}
-	function startButtonLeave() { customClick(false, startButton) };
+	function startButtonLeave(event) {
+		event.stopPropagation();
+		customClick(false, startButton)
+	};
 
-	indexLink.addEventListener('mouseenter', () => { customClick(true, indexLink) });
-	indexLink.addEventListener('mouseleave', () => { customClick(false, indexLink) });
+	indexLink.addEventListener('handenter', (event) => {
+		event.stopPropagation();
+		customClick(true, indexLink)
+	});
+	indexLink.addEventListener('handleave', (event) => {
+		event.stopPropagation();
+		customClick(false, indexLink)
+	});
 
 
 
@@ -113,18 +135,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const chosenPlace = places.find(Place => Place.name === choice);
 
-		
+
 		const JSONChosenPlace = JSON.stringify(chosenPlace);
 		currentLocation = JSON.parse(JSONChosenPlace);
-		
-		console.log(chosenPlace, JSONChosenPlace, currentLocation)
-		
+
 		updatePaths(currentLocation.connections);
 		updateBackground(currentLocation.image);
 
 		if (currentLocation.person) {
 			updatePerson(currentLocation.person);
-			console.log(currentLocation.person)
 		} else {
 			personElement.style.display = 'none';
 			characterName.style.display = 'none';
@@ -140,24 +159,28 @@ document.addEventListener("DOMContentLoaded", function () {
 		title.innerText = currentLocation.name;
 
 		//Per ogni percorso fai vedere un bottone
-		choiceArray.forEach(choice => {
+		for (const choice of choiceArray) {
 			let choiceButton = document.createElement('button');
 			choiceButton.innerText = choice;
 			choiceButton.className = 'path';
 
-			choiceButton.addEventListener('mouseenter', () => {
+			choiceButton.addEventListener('handenter', (event) => {
+				event.stopPropagation();
 				customClick(true, choiceButton, function () {
 					styleLeave()
 					choiceHandler(choiceButton.innerText)
 				});
 			});
 
-			choiceButton.addEventListener('mouseleave', () => { customClick(false, choiceButton) });
+			choiceButton.addEventListener('handleave', (event) => {
+				event.stopPropagation();
+				customClick(false, choiceButton)
+			});
 
 			choicesContainer.appendChild(choiceButton);
 
 			getRects(choiceButton)
-		});
+		};
 
 
 	}
@@ -168,26 +191,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	//* Person handling ----------------------------------------
 
-	
+
 	function updatePerson(person) {
 
-		console.log(person)
 		personElement.style.backgroundImage = "url(src/Img/" + person.sprite + ".png)";
 		personElement.style.display = 'block';
 		getRects(personElement)
 
 		characterName.innerText = person.name;
 
-		personElement.addEventListener('mouseenter', engageConvoEnter);
-		personElement.addEventListener('mouseleave', engageConvoLeave);
+		personElement.addEventListener('handenter', engageConvoEnter);
+		personElement.addEventListener('handleave', engageConvoLeave);
 
-		function engageConvoEnter() {
+		function engageConvoEnter(event) {
 			if (!inConversation) {
-
+				event.stopPropagation();
 				customClick(true, personElement, function () {
 
-					personElement.removeEventListener('mouseenter', engageConvoEnter);
-					personElement.removeEventListener('mouseleave', engageConvoLeave);
+					personElement.removeEventListener('handenter', engageConvoEnter);
+					personElement.removeEventListener('handleave', engageConvoLeave);
 
 					styleLeave()
 
@@ -207,16 +229,17 @@ document.addEventListener("DOMContentLoaded", function () {
 				});
 			}
 		};
-		function engageConvoLeave() { customClick(false, personElement) };
+		function engageConvoLeave(event) {
+			event.stopPropagation();
+			customClick(false, personElement)
+		};
 	}
 	//* Dialogue Box Logic ----------------------------------------
 	//! Dio carissimo
 	//! Non funziona il passaggio delle textlines voglio morire
 	//TODO FAR FUNZIONARE STA COSA
-	
-	function printText(textlines) {
 
-		console.log(textlines)
+	function printText(textlines) {
 
 		function checkLines() {
 			if (textlines.length > 0) {
@@ -228,11 +251,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				textbox.innerHTML = '<p>End of conversation.</p>';
 
-				textbox.addEventListener('mouseenter', endConvoEnter);
-				textbox.addEventListener('mouseleave', endConvoLeave);
+				textbox.addEventListener('handenter', endConvoEnter);
+				textbox.addEventListener('handleave', endConvoLeave);
 
-				function endConvoEnter() {
+				function endConvoEnter(event) {
+					event.stopPropagation();
 					customClick(true, textbox, function () {
+
+						textbox.removeEventListener('handenter', endConvoEnter);
+						textbox.removeEventListener('handleave', endConvoLeave);
 
 						characterName.style.display = 'none';
 						textbox.style.display = 'none';
@@ -249,19 +276,17 @@ document.addEventListener("DOMContentLoaded", function () {
 						inConversation = false;
 						chosenPlace.person.encountered = true;
 
-
-						textbox.removeEventListener('mouseenter', endConvoEnter);
-						textbox.removeEventListener('mouseleave', endConvoLeave);
 					});
 				}
 
-				function endConvoLeave() { customClick(false, textbox) };
+				function endConvoLeave(event) {
+					event.stopPropagation();
+					customClick(false, textbox)
+				};
 			}
 		}
 
 		function displayLine(line) {
-
-			console.log(line)
 
 			textbox.innerHTML = ''; // Empty the textbox
 
@@ -270,8 +295,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			textbox.appendChild(lineContainer);
 
 			typeLine(line, 0, lineContainer, function () {
-				textbox.addEventListener('mouseenter', nextEnter);
-				textbox.addEventListener('mouseleave', nextLeave);
+				textbox.addEventListener('handenter', nextEnter);
+				textbox.addEventListener('handleave', nextLeave);
 			});
 		}
 
@@ -288,11 +313,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 
-		function nextEnter() {
+		function nextEnter(event) {
+			event.stopPropagation();
 			customClick(true, textbox, function () {
 
-				textbox.removeEventListener('mouseenter', nextEnter);
-				textbox.removeEventListener('mouseleave', nextLeave);
+				textbox.removeEventListener('handenter', nextEnter);
+				textbox.removeEventListener('handleave', nextLeave);
 
 				textbox.style.backgroundColor = cyans[2]
 				textbox.style.color = cyans[0]
@@ -306,7 +332,10 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 		}
 
-		function nextLeave() { customClick(false, textbox) };
+		function nextLeave(event) {
+			event.stopPropagation();
+			customClick(false, textbox)
+		};
 
 		checkLines();
 	}
@@ -317,7 +346,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (currentLocation.person) {
 		updatePerson(currentLocation.person)
 	} else {
-		console.log('no person')
 		personElement.style.display = 'none';
 		characterName.style.display = 'none';
 		textbox.style.display = 'none';
@@ -346,10 +374,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	canvas.height = window.innerHeight;
 
 	initCamera(video, videoConfig.width, videoConfig.height, videoConfig.fps)
-	.then(video => {
-		video.play()
-		video.addEventListener("loadeddata", boot)
-	})
+		.then(video => {
+			video.play()
+			video.addEventListener("loadeddata", boot)
+		})
 
 	async function createDetector() {
 		return window.handPoseDetection.createDetector(window.handPoseDetection.SupportedModels.MediaPipeHands, mediaPipeConfig)
@@ -358,6 +386,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	async function boot() {
 
 		const detector = await createDetector()
+
 
 		requestAnimationFrame(loop)
 
@@ -369,17 +398,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			// https://developers.google.com/mediapipe/solutions/vision/hand_landmarker
 			for (const hand of hands) {
+
 				const handPoints = {
 					pinkyB: hand.keypoints[17],
 					indexB: hand.keypoints[5],
 					wrist: hand.keypoints[0]
 				};
 
-				let palmX = (handPoints.pinkyB.x + handPoints.indexB.x) / 2;
-				let palmY = (handPoints.pinkyB.y + handPoints.wrist.y) / 2;
+				const palmX = (handPoints.pinkyB.x + handPoints.indexB.x) / 2;
+				const palmY = (handPoints.pinkyB.y + handPoints.wrist.y) / 2;
 
-				mappedPalmX = mapValue(palmX, 0, video.width, 0, canvas.width);
-				mappedPalmY = mapValue(palmY, 0, video.height, 0, canvas.height);
+				mappedPalmX = await mapValue(palmX, 0, video.width, 0, canvas.width);
+				mappedPalmY = await mapValue(palmY, 0, video.height, 0, canvas.height);
 
 				function mapValue(value, inputMin, inputMax, outputMin, outputMax) {
 					let inputRange = inputMax - inputMin;
@@ -392,41 +422,47 @@ document.addEventListener("DOMContentLoaded", function () {
 				cursor.style.left = mappedPalmX + 'px';
 				cursor.style.top = mappedPalmY + 'px';
 
-				interactElements.forEach(interactElement => {
-
-					if (mappedPalmX > interactElement.rect.left &&
-						mappedPalmX < interactElement.rect.right &&
-						mappedPalmY > interactElement.rect.top &&
-						mappedPalmY < interactElement.rect.bottom &&
-						!isHandInside) {
-
-							interactElement.object.dispatchEvent(mouseenter)
-							isHandInside = true; // Update flag
-							styleEnter()
-							
-
-					} else if (isHandInside) {
-
-							interactElement.object.dispatchEvent(mouseleave)
-							isHandInside = false; // Update flag
-							styleLeave()
-					}
-				});
+				await checkForHands(mappedPalmX, mappedPalmY);
 			}
 		}
 	}
+
+	async function checkForHands() {
+		for (const interactElement of interactElements) {
+
+			let isHandInside = false;
+
+			if (
+				mappedPalmX > interactElement.rect.left &&
+				mappedPalmX < interactElement.rect.right &&
+				mappedPalmY > interactElement.rect.top &&
+				mappedPalmY < interactElement.rect.bottom &&
+				!isHandInside
+			) {
+				isHandInside = true; // Update flag
+				interactElement.object.dispatchEvent(handEnter);
+				console.log('handEnter');
+			} else {
+				if (isHandInside) {
+					interactElement.object.dispatchEvent(handLeave);
+					console.log('handLeave');
+				}
+			}
+		}
+	}
+
 
 	//* Hand Hover and click ----------------------------------------
 	function customClick(status, target, clickFunction) {
 
 		let duration = 2;
-		let opacity = 0;
+		let opacity;
 
 		if (status) {
 
-			if (!timer) { timer = setInterval(updateCountdown, 1000) };
-
 			styleEnter();
+
+			if (!timer) { timer = setInterval(updateCountdown, 1000) };
 
 			if (target == textbox) {
 				target.style.color = yellows[0];
@@ -448,14 +484,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		} else { //Leave
 
+			styleLeave();
+
 			if (timer) {
 				clearInterval(timer);
 				timer = undefined; // Reset the timer variable
 				cursor.innerText = '';
 			}
-
-			styleLeave();
-
 
 			if (target == textbox) {
 				target.style.color = cyans[0];
@@ -480,28 +515,28 @@ document.addEventListener("DOMContentLoaded", function () {
 		//* Countdown HandEnter ----------------------------------------
 
 		function updateCountdown() {
-	
+
 			if (duration >= 1) {
-	
+
 				cursor.innerText = duration;
 				cursor.style.backgroundColor = 'rgba(251, 139, 36, ' + opacity + ')';
-	
-				opacity += 1 / 3;
+
+				opacity = 1 / duration;
 				duration--;
-	
+
 			} else {
-	
+
 				cursor.innerText = '';
-	
+
 				duration = 2;
 				opacity = 0;
-	
+
 				clearInterval(timer);
 				timer = undefined; // Reset the timer variable
-	
+
 				target.addEventListener('click', clickFunction)
 				target.click()
-	
+
 			}
 		}
 	}
