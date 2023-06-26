@@ -98,16 +98,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	startButton.addEventListener('handenter', startButtonEnter);
 	startButton.addEventListener('handleave', startButtonLeave)
+	startButton.addEventListener('mouseenter', startButtonEnter);
+	startButton.addEventListener('mouseleave', startButtonLeave)
 
 	function startButtonEnter(event) {
 		event.stopPropagation();
 		customClick(true, startButton, function () {
-			startButton.removeEventListener('handleave', startButtonLeave);
-			startButton.removeEventListener('handenter', startButtonEnter);
 
-			splashScreen.style.display = 'none';
-			splashScreen.style.zIndex = '-1000';
-			startButton.style.display = 'none';
+			splashScreen.remove()
+			startButton.remove()
+			indexLink.remove();
 			gameContainer.style.display = 'block';
 
 			styleLeave()
@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Handle the player's choice
 
 		const chosenPlace = places.find(Place => Place.name === choice);
-
 
 		const JSONChosenPlace = JSON.stringify(chosenPlace);
 		currentLocation = JSON.parse(JSONChosenPlace);
@@ -177,6 +176,19 @@ document.addEventListener("DOMContentLoaded", function () {
 				customClick(false, choiceButton)
 			});
 
+			choiceButton.addEventListener('mouseenter', (event) => {
+				event.stopPropagation();
+				customClick(true, choiceButton, function () {
+					styleLeave()
+					choiceHandler(choiceButton.innerText)
+				});
+			});
+
+			choiceButton.addEventListener('mouseleave', (event) => {
+				event.stopPropagation();
+				customClick(false, choiceButton)
+			});
+
 			choicesContainer.appendChild(choiceButton);
 
 			getRects(choiceButton)
@@ -193,47 +205,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	function updatePerson(person) {
+		if (currentLocation.person) {
+			personElement.style.backgroundImage = "url(src/Img/" + person.sprite + ".png)";
+			personElement.style.display = 'block';
+			getRects(personElement)
 
-		personElement.style.backgroundImage = "url(src/Img/" + person.sprite + ".png)";
-		personElement.style.display = 'block';
-		getRects(personElement)
+			characterName.innerText = person.name;
 
-		characterName.innerText = person.name;
+			personElement.addEventListener('handenter', engageConvoEnter);
+			personElement.addEventListener('handleave', engageConvoLeave);
 
-		personElement.addEventListener('handenter', engageConvoEnter);
-		personElement.addEventListener('handleave', engageConvoLeave);
+			function engageConvoEnter(event) {
+				if (!inConversation) {
+					event.stopPropagation();
+					customClick(true, personElement, function () {
 
-		function engageConvoEnter(event) {
-			if (!inConversation) {
+						personElement.removeEventListener('handenter', engageConvoEnter);
+						personElement.removeEventListener('handleave', engageConvoLeave);
+
+						styleLeave()
+
+						characterName.style.display = 'block';
+
+						textbox.style.display = 'block';
+
+						personElement.style.width = '800px';
+						personElement.style.height = '1200px';
+						personElement.style.top = '70%';
+						personElement.style.left = '50%';
+
+						choicesContainer.style.display = 'none';
+
+						printText(person.textlines);
+						inConversation = true;
+					});
+				}
+			};
+			function engageConvoLeave(event) {
 				event.stopPropagation();
-				customClick(true, personElement, function () {
-
-					personElement.removeEventListener('handenter', engageConvoEnter);
-					personElement.removeEventListener('handleave', engageConvoLeave);
-
-					styleLeave()
-
-					characterName.style.display = 'block';
-
-					textbox.style.display = 'block';
-
-					personElement.style.width = '800px';
-					personElement.style.height = '1200px';
-					personElement.style.top = '70%';
-					personElement.style.left = '50%';
-
-					choicesContainer.style.display = 'none';
-
-					printText(person.textlines);
-					inConversation = true;
-				});
-			}
-		};
-		function engageConvoLeave(event) {
-			event.stopPropagation();
-			customClick(false, personElement)
-		};
+				customClick(false, personElement)
+			};
+		} else {
+			personElement.style.display = 'none';
+			characterName.style.display = 'none';
+			textbox.style.display = 'none';
+		}
 	}
+	
 	//* Dialogue Box Logic ----------------------------------------
 	//! Dio carissimo
 	//! Non funziona il passaggio delle textlines voglio morire
@@ -343,13 +361,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	//* First update calls ----------------------------------------
 	updateBackground(currentLocation.image);
 	updatePaths(currentLocation.connections);
-	if (currentLocation.person) {
-		updatePerson(currentLocation.person)
-	} else {
-		personElement.style.display = 'none';
-		characterName.style.display = 'none';
-		textbox.style.display = 'none';
-	}
+
+	updatePerson(currentLocation.person)
+
 
 
 	//! -------------------- Camera interaction code --------------------
@@ -386,7 +400,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	async function boot() {
 
 		const detector = await createDetector()
-
 
 		requestAnimationFrame(loop)
 
