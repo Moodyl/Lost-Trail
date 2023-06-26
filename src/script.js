@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	let mappedPalmY;
 	let isHandInside = false;
 	let inConversation = false;
-	let textSpeed = 30;
+	let textSpeed = 25;
 	const cyans = ['#136F63', '#0B413A', '#072723', '#081211'];
 	const yellows = ['#FB8B24', '#9A4F09', '#371E06', '#120D08'];
 
