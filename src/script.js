@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	let mappedPalmX;
 	let mappedPalmY;
 	let inConversation = false;
+	let isHandInside = false;
 	let textSpeed = 25;
 	const cyans = ['#136F63', '#0B413A', '#072723', '#081211'];
 	const yellows = ['#FB8B24', '#9A4F09', '#371E06', '#120D08'];
@@ -101,8 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	startButton.addEventListener('mouseenter', startButtonEnter);
 	startButton.addEventListener('mouseleave', startButtonLeave)
 
-	function startButtonEnter(event) {
-		event.stopPropagation();
+	function startButtonEnter() {
 		customClick(true, startButton, function () {
 
 			splashScreen.remove()
@@ -113,17 +113,20 @@ document.addEventListener("DOMContentLoaded", function () {
 			styleLeave()
 		});
 	}
-	function startButtonLeave(event) {
-		event.stopPropagation();
+	function startButtonLeave() {
 		customClick(false, startButton)
 	};
 
-	indexLink.addEventListener('handenter', (event) => {
-		event.stopPropagation();
+	indexLink.addEventListener('handenter', () => {
 		customClick(true, indexLink)
 	});
-	indexLink.addEventListener('handleave', (event) => {
-		event.stopPropagation();
+	indexLink.addEventListener('handleave', () => {
+		customClick(false, indexLink)
+	});
+	indexLink.addEventListener('mouseenter', () => {
+		customClick(true, indexLink)
+	});
+	indexLink.addEventListener('mouseleave', () => {
 		customClick(false, indexLink)
 	});
 
@@ -135,22 +138,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const chosenPlace = places.find(Place => Place.name === choice);
 
-		const JSONChosenPlace = JSON.stringify(chosenPlace);
-		currentLocation = JSON.parse(JSONChosenPlace);
+		// const JSONChosenPlace = JSON.stringify(chosenPlace);
+		// currentLocation = JSON.parse(JSONChosenPlace);
+
+		currentLocation = chosenPlace;
 
 		updatePaths(currentLocation.connections);
 		updateBackground(currentLocation.image);
-
-		if (currentLocation.person) {
-			updatePerson(currentLocation.person);
-		} else {
-			personElement.style.display = 'none';
-			characterName.style.display = 'none';
-			textbox.style.display = 'none';
-		}
+		updatePerson(currentLocation.person);
 	}
 
-	//* Choice updater ----------------------------------------
+	//* Choice updaters ----------------------------------------
 	function updatePaths(choiceArray) {
 		//Prendi il titolo del luogo corrente e la lista dei luoghi
 		const title = document.getElementById('title');
@@ -163,35 +161,35 @@ document.addEventListener("DOMContentLoaded", function () {
 			choiceButton.innerText = choice;
 			choiceButton.className = 'path';
 
-			choiceButton.addEventListener('handenter', (event) => {
-				event.stopPropagation();
+			getRects(choiceButton)
+
+			choiceButton.addEventListener('handenter', () => {
+
 				customClick(true, choiceButton, function () {
 					styleLeave()
 					choiceHandler(choiceButton.innerText)
 				});
 			});
 
-			choiceButton.addEventListener('handleave', (event) => {
-				event.stopPropagation();
+			choiceButton.addEventListener('handleave', () => {
+
 				customClick(false, choiceButton)
 			});
 
-			choiceButton.addEventListener('mouseenter', (event) => {
-				event.stopPropagation();
+			choiceButton.addEventListener('mouseenter', () => {
+
 				customClick(true, choiceButton, function () {
 					styleLeave()
 					choiceHandler(choiceButton.innerText)
 				});
 			});
 
-			choiceButton.addEventListener('mouseleave', (event) => {
-				event.stopPropagation();
+			choiceButton.addEventListener('mouseleave', () => {
+
 				customClick(false, choiceButton)
 			});
 
 			choicesContainer.appendChild(choiceButton);
-
-			getRects(choiceButton)
 		};
 
 
@@ -201,27 +199,29 @@ document.addEventListener("DOMContentLoaded", function () {
 		placeBG.style.backgroundImage = "url(src/Img/" + background + ".png)";
 	}
 
-	//* Person handling ----------------------------------------
-
-
 	function updatePerson(person) {
 		if (currentLocation.person) {
 			personElement.style.backgroundImage = "url(src/Img/" + person.sprite + ".png)";
 			personElement.style.display = 'block';
+
 			getRects(personElement)
 
 			characterName.innerText = person.name;
 
 			personElement.addEventListener('handenter', engageConvoEnter);
 			personElement.addEventListener('handleave', engageConvoLeave);
+			personElement.addEventListener('mouseenter', engageConvoEnter);
+			personElement.addEventListener('mouseleave', engageConvoLeave);
 
-			function engageConvoEnter(event) {
+			function engageConvoEnter() {
 				if (!inConversation) {
-					event.stopPropagation();
+
 					customClick(true, personElement, function () {
 
 						personElement.removeEventListener('handenter', engageConvoEnter);
 						personElement.removeEventListener('handleave', engageConvoLeave);
+						personElement.removeEventListener('mouseenter', engageConvoEnter);
+						personElement.removeEventListener('mouseleave', engageConvoLeave);
 
 						styleLeave()
 
@@ -241,8 +241,8 @@ document.addEventListener("DOMContentLoaded", function () {
 					});
 				}
 			};
-			function engageConvoLeave(event) {
-				event.stopPropagation();
+			function engageConvoLeave() {
+
 				customClick(false, personElement)
 			};
 		} else {
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			textbox.style.display = 'none';
 		}
 	}
-	
+
 	//* Dialogue Box Logic ----------------------------------------
 	//! Dio carissimo
 	//! Non funziona il passaggio delle textlines voglio morire
@@ -271,9 +271,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				textbox.addEventListener('handenter', endConvoEnter);
 				textbox.addEventListener('handleave', endConvoLeave);
+				textbox.addEventListener('mouseenter', endConvoEnter);
+				textbox.addEventListener('mouseleave', endConvoLeave);
 
-				function endConvoEnter(event) {
-					event.stopPropagation();
+				function endConvoEnter() {
+
 					customClick(true, textbox, function () {
 
 						textbox.removeEventListener('handenter', endConvoEnter);
@@ -297,8 +299,8 @@ document.addEventListener("DOMContentLoaded", function () {
 					});
 				}
 
-				function endConvoLeave(event) {
-					event.stopPropagation();
+				function endConvoLeave() {
+
 					customClick(false, textbox)
 				};
 			}
@@ -331,8 +333,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 
-		function nextEnter(event) {
-			event.stopPropagation();
+		function nextEnter() {
+
 			customClick(true, textbox, function () {
 
 				textbox.removeEventListener('handenter', nextEnter);
@@ -350,8 +352,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 		}
 
-		function nextLeave(event) {
-			event.stopPropagation();
+		function nextLeave() {
+
 			customClick(false, textbox)
 		};
 
@@ -361,7 +363,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	//* First update calls ----------------------------------------
 	updateBackground(currentLocation.image);
 	updatePaths(currentLocation.connections);
-
 	updatePerson(currentLocation.person)
 
 
@@ -442,23 +443,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	async function checkForHands() {
 		for (const interactElement of interactElements) {
-
-			let isHandInside = false;
-
 			if (
 				mappedPalmX > interactElement.rect.left &&
 				mappedPalmX < interactElement.rect.right &&
 				mappedPalmY > interactElement.rect.top &&
-				mappedPalmY < interactElement.rect.bottom &&
-				!isHandInside
+				mappedPalmY < interactElement.rect.bottom
 			) {
-				isHandInside = true; // Update flag
-				interactElement.object.dispatchEvent(handEnter);
-				console.log('handEnter');
+				if (!isHandInside) {
+					interactElement.object.dispatchEvent(handEnter);
+					isHandInside = true; // Update flag
+					console.log('hand enter')
+				}
 			} else {
 				if (isHandInside) {
 					interactElement.object.dispatchEvent(handLeave);
-					console.log('handLeave');
+					isHandInside = false; // Update flag
+					console.log('hand leave')
 				}
 			}
 		}
@@ -572,14 +572,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		cursor.style.width = '100px';
 		cursor.style.height = '100px';
 		cursor.style.backgroundColor = 'transparent';
-		cursor.style.border = '1px solid ' + yellows[0];
+		cursor.style.outline = '1px solid ' + yellows[0];
 	}
 
 	function styleLeave() {
 		cursor.style.width = '20px';
 		cursor.style.height = '20px';
-		cursor.style.backgroundColor = cyans[0];
-		cursor.style.border = 'transparent';
+		cursor.style.backgroundColor = cyans[2];
+		cursor.style.outline = '1px solid ' + cyans[0];
 	}
 
 })
